@@ -1,0 +1,22 @@
+.auth__input {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #CCCCCC;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #CCCCCC;
+  outline: 0;
+  outline-offset: 0;
+  padding-bottom: 13px;
+  padding-top: 30px;
+  background-color: #000;
+}
+
+
+.auth__input:first-of-type {
+  padding-top: 50px;
+}

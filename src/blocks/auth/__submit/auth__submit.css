@@ -1,0 +1,14 @@
+.auth__submit {
+  width: 100%;
+  min-height: 50px;
+  background-color: #fff;
+  margin-top: 216px;
+  border-radius: 2px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #000000;
+}

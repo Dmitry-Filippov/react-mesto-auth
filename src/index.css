@@ -44,3 +44,9 @@
 @import url(./blocks/pop-up/__submit/_active/pop-up__submit_active.css);
 @import url(./blocks/pop-up/__close/pop-up__close.css);
 @import url(./blocks/loader/loader.css);
+@import url(./blocks/auth/auth.css);
+@import url(./blocks/auth/__header/auth__header.css);
+@import url(./blocks/auth/__input/auth__input.css);
+@import url(./blocks/auth/__submit/auth__submit.css);
+@import url(./blocks/auth/__paragraph/auth__paragraph.css);
+@import url(./blocks/auth/__link/auth__link.css);

@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -9,7 +10,9 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import Login from "./Login";
 import Loader from "./Loader";
+import Register from "./Register";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfileOpen] = React.useState(false);
@@ -18,14 +21,15 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getDefaultCards()]).then(
-      ([userInfo, defaultCards]) => {
+    Promise.all([api.getUserInfo(), api.getDefaultCards()])
+      .then(([userInfo, defaultCards]) => {
         setCurrentUser(userInfo);
         setCards(defaultCards);
-      }
-    ).catch(error => console.log(error));
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   function handleCardLike(card) {
@@ -46,30 +50,42 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card).then((res) => {
-      setCards(cards =>cards.filter((cardItem) => cardItem !== card))
-      console.log(res);
-    }).catch(error => console.log(error));
+    api
+      .deleteCard(card)
+      .then((res) => {
+        setCards((cards) => cards.filter((cardItem) => cardItem !== card));
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
   }
 
   function handleAddCard(name, link) {
-    api.postCard(name, link).then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups();
-    }).catch(error => console.log(error));
+    api
+      .postCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(error));
   }
 
   function handleUpdateUser(name, description) {
-    api.patchUserInfo(name, description).then((userInfo) => {
-      setCurrentUser(userInfo);
-      closeAllPopups();
-    }).catch(error => console.log(error));
+    api
+      .patchUserInfo(name, description)
+      .then((userInfo) => {
+        setCurrentUser(userInfo);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(error));
   }
   function handleUpdateAvatar(link) {
-    api.patchAvatar(link).then((userInfo) => {
-      setCurrentUser(userInfo);
-      closeAllPopups();
-    }).catch(error => console.log(error));
+    api
+      .patchAvatar(link)
+      .then((userInfo) => {
+        setCurrentUser(userInfo);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(error));
   }
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -95,15 +111,29 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
           <Header />
-          <Main
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDel={handleCardDelete}
-          />
+          <Switch>
+            <Route exact path="/">
+              {loggedIn ? (
+                <Main
+                  onEditProfile={handleEditProfileClick}
+                  onAddPlace={handleAddPlaceClick}
+                  onEditAvatar={handleEditAvatarClick}
+                  onCardClick={handleCardClick}
+                  cards={cards}
+                  onCardLike={handleCardLike}
+                  onCardDel={handleCardDelete}
+                />
+              ) : (
+                <Redirect to="/sign-in" />
+              )}
+            </Route>
+            <Route path="/sign-up">
+              < Register />
+            </Route>
+            <Route path="/sign-in">
+              <Login />
+            </Route>
+          </Switch>
           <Footer />
 
           <EditProfilePopup
@@ -131,14 +161,11 @@ function App() {
           ></PopupWithForm>
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
         </div>
       </CurrentUserContext.Provider>
     );
   } else {
-    return (
-      <Loader />
-    )
+    return <Loader />;
   }
 }
 
