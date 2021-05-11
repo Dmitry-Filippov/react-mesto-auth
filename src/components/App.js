@@ -131,7 +131,7 @@ function App() {
               < Register />
             </Route>
             <Route path="/sign-in">
-              <Login />
+              <Login setLoggedIn={setLoggedIn}/>
             </Route>
           </Switch>
           <Footer />
