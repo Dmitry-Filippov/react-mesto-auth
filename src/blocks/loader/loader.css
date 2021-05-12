@@ -87,5 +87,6 @@
 .loader {
   display: flex;
   padding-top: 15%;
+  padding-bottom: 15%;
   justify-content: center;
 }

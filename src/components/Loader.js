@@ -1,6 +1,6 @@
 function Loader() {
   return (
-    <div className="page">
+    // <div className="page">
       <div className="loader">
         <div className="lds-default">
           <div></div>
@@ -17,7 +17,7 @@ function Loader() {
           <div></div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
 

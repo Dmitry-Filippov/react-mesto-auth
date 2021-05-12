@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -13,6 +13,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import Login from "./Login";
 import Loader from "./Loader";
 import Register from "./Register";
+import * as auth from "../utils/authApi.js";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfileOpen] = React.useState(false);
@@ -22,6 +23,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const history = useHistory()
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getDefaultCards()])
@@ -30,7 +32,19 @@ function App() {
         setCards(defaultCards);
       })
       .catch((error) => console.log(error));
+    tokenCheck();
   }, []);
+
+  function tokenCheck() {
+    if (localStorage.getItem("token")) {
+      const token = localStorage.getItem("token");
+      auth.getContent(token).then(res => {
+        console.log(res);
+        setLoggedIn(true);
+        history.push('/')
+      })
+    }
+  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -128,10 +142,10 @@ function App() {
               )}
             </Route>
             <Route path="/sign-up">
-              < Register />
+              <Register />
             </Route>
             <Route path="/sign-in">
-              <Login setLoggedIn={setLoggedIn}/>
+              <Login setLoggedIn={setLoggedIn} />
             </Route>
           </Switch>
           <Footer />
@@ -165,7 +179,13 @@ function App() {
       </CurrentUserContext.Provider>
     );
   } else {
-    return <Loader />;
+    return (
+      <div className="page">
+        <Header />
+        <Loader />
+        <Footer />
+      </div>
+    );
   }
 }
 

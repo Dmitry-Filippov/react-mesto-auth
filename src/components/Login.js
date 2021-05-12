@@ -17,6 +17,7 @@ function Login({setLoggedIn}) {
     e.preventDefault();
     auth.authorize(email, password).then(res => {
       console.log(res);
+      localStorage.setItem('token', res.token);
       setLoggedIn(true);
       history.push("/")
     }).catch(err => {
