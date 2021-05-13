@@ -7,7 +7,7 @@ function InfoTooltip(props) {
   return (
     <div className={`pop-up-container ${props.isInfoPopupOpen ? 'pop-up-container_opened' : ''}  pop-up-container_type_info`}>
       <div className="pop-up pop-up_type_info">
-        <img className="pop-up_type_info__image" src={props.isRegisterConfirm ? confirmSrc : refuseSrc} />
+        <img className="pop-up_type_info__image" src={props.isRegisterConfirm ? confirmSrc : refuseSrc} alt='' />
         <p className="pop-up_type_info__text">{props.isRegisterConfirm ? confirm : refuse}</p>
         <button
           className="pop-up__close"
