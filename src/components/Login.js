@@ -2,10 +2,13 @@ import React from 'react';
 import * as auth from '../utils/authApi';
 import { useHistory } from "react-router-dom";
 
-function Login({setLoggedIn}) {
+function Login({setLoggedIn, handleHeaderChange}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const history = useHistory();
+  React.useEffect(() => {
+    handleHeaderChange("/sign-up", "Регистрация")
+  }, [])
 
   function handleEmailChange(e) {
     setEmail(e.target.value);

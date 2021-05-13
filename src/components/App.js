@@ -23,7 +23,10 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState(null);
   const [cards, setCards] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const history = useHistory()
+  const history = useHistory();
+  const [headerEmail, setHeaderEmail] = React.useState("");
+  const [path, setPath] = React.useState("");
+  const [linkText, setLinkText] = React.useState("");
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getDefaultCards()])
@@ -35,15 +38,28 @@ function App() {
     tokenCheck();
   }, []);
 
+  function handleLinkClick() {
+    setLoggedIn(false);
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+    }
+  }
+
   function tokenCheck() {
     if (localStorage.getItem("token")) {
       const token = localStorage.getItem("token");
-      auth.getContent(token).then(res => {
-        console.log(res);
+      auth.getContent(token).then((res) => {
+        console.log(res.data.email);
         setLoggedIn(true);
-        history.push('/')
-      })
+        setHeaderEmail(res.data.email);
+        history.push("/");
+      });
     }
+  }
+
+  function handleHeaderChange(path, linkText) {
+    setPath(path);
+    setLinkText(linkText);
   }
 
   function handleCardLike(card) {
@@ -124,7 +140,13 @@ function App() {
     return (
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
-          <Header />
+          <Header
+            headerEmail={headerEmail}
+            path={path}
+            linkText={linkText}
+            isLoggedIn={loggedIn}
+            handleLinkClick={handleLinkClick}
+          />
           <Switch>
             <Route exact path="/">
               {loggedIn ? (
@@ -136,16 +158,20 @@ function App() {
                   cards={cards}
                   onCardLike={handleCardLike}
                   onCardDel={handleCardDelete}
+                  handleHeaderChange={handleHeaderChange}
                 />
               ) : (
                 <Redirect to="/sign-in" />
               )}
             </Route>
             <Route path="/sign-up">
-              <Register />
+              <Register handleHeaderChange={handleHeaderChange} />
             </Route>
             <Route path="/sign-in">
-              <Login setLoggedIn={setLoggedIn} />
+              <Login
+                setLoggedIn={setLoggedIn}
+                handleHeaderChange={handleHeaderChange}
+              />
             </Route>
           </Switch>
           <Footer />

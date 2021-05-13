@@ -2,10 +2,13 @@ import React from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import * as auth from "../utils/authApi.js";
 
-function Register() {
+function Register({handleHeaderChange}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const history = useHistory();
+  React.useEffect(() => {
+    handleHeaderChange('/sign-in', 'Войти')
+  }, [])
 
   function handleEmailChange(e) {
     setEmail(e.target.value);

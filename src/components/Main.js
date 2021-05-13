@@ -4,6 +4,9 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
+  React.useEffect(() => {
+    props.handleHeaderChange('/sign-in', 'Выход')
+  }, [])
 
   return (
     <main className="content">
