@@ -14,6 +14,7 @@ import Login from "./Login";
 import Loader from "./Loader";
 import Register from "./Register";
 import * as auth from "../utils/authApi.js";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfileOpen] = React.useState(false);
@@ -27,6 +28,8 @@ function App() {
   const [headerEmail, setHeaderEmail] = React.useState("");
   const [path, setPath] = React.useState("");
   const [linkText, setLinkText] = React.useState("");
+  const [isInfoPopupOpen, setInfoPopupOpen] = React.useState(false);
+  const [isRegisterConfirm, setRegisterComfirm] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getDefaultCards()])
@@ -43,6 +46,16 @@ function App() {
     if (localStorage.getItem("token")) {
       localStorage.removeItem("token");
     }
+  }
+
+  function handleRegisterConfirm() {
+    setRegisterComfirm(true);
+    setInfoPopupOpen(true);
+  }
+
+  function handleRegisterRefuse() {
+    setRegisterComfirm(false);
+    setInfoPopupOpen(true);
   }
 
   function tokenCheck() {
@@ -134,6 +147,7 @@ function App() {
     setEditProfileOpen(false);
     setAddPlacePopupOpen(false);
     setSelectedCard(null);
+    setInfoPopupOpen(false);
   }
 
   if (currentUser !== null) {
@@ -165,7 +179,11 @@ function App() {
               )}
             </Route>
             <Route path="/sign-up">
-              <Register handleHeaderChange={handleHeaderChange} />
+              <Register
+                handleHeaderChange={handleHeaderChange}
+                handleRegisterConfirm={handleRegisterConfirm}
+                handleRegisterRefuse={handleRegisterRefuse}
+              />
             </Route>
             <Route path="/sign-in">
               <Login
@@ -201,6 +219,12 @@ function App() {
           ></PopupWithForm>
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
+          <InfoTooltip
+            isInfoPopupOpen={isInfoPopupOpen}
+            isRegisterConfirm={isRegisterConfirm}
+            closePopup={closeAllPopups}
+          />
         </div>
       </CurrentUserContext.Provider>
     );

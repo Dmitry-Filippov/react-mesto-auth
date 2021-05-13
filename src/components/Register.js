@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import * as auth from "../utils/authApi.js";
 
-function Register({handleHeaderChange}) {
+function Register({handleHeaderChange, handleRegisterConfirm, handleRegisterRefuse}) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const history = useHistory();
@@ -20,8 +20,10 @@ function Register({handleHeaderChange}) {
     e.preventDefault();
     auth.register(email, password).then(res => {
       console.log(res);
+      handleRegisterConfirm()
       history.push("/sign-in")
     }).catch(err => {
+      handleRegisterRefuse()
       console.log(err)
     })
   }
