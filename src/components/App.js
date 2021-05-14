@@ -41,32 +41,50 @@ function App() {
     tokenCheck();
   }, []);
 
-  function handleLinkClick() {
+  function handleLogin(email, password) {
+    auth.authorize(email, password).then(res => {
+      console.log(res);
+      localStorage.setItem('token', res.token);
+      setLoggedIn(true);
+      tokenCheck();
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  function handleLogout() {
     setLoggedIn(false);
     if (localStorage.getItem("token")) {
       localStorage.removeItem("token");
     }
   }
 
-  function handleRegisterConfirm() {
-    setRegisterComfirm(true);
-    setInfoPopupOpen(true);
-  }
-
-  function handleRegisterRefuse() {
-    setRegisterComfirm(false);
-    setInfoPopupOpen(true);
+  function handleRegister(email, password) {
+    auth.register(email, password).then(res => {
+      console.log(res);
+      setRegisterComfirm(true);
+      setInfoPopupOpen(true);
+      history.push("/sign-in")
+    }).catch(err => {
+      setRegisterComfirm(false);
+      setInfoPopupOpen(true);
+      console.log(err)
+    })
   }
 
   function tokenCheck() {
+    const token = localStorage.getItem("token");
     if (localStorage.getItem("token")) {
-      const token = localStorage.getItem("token");
-      auth.getContent(token).then((res) => {
-        console.log(res.data.email);
-        setLoggedIn(true);
-        setHeaderEmail(res.data.email);
-        history.push("/");
-      });
+      auth
+        .getContent(token)
+        .then((res) => {
+          setLoggedIn(true);
+          setHeaderEmail(res.data.email);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
 
@@ -78,17 +96,27 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     if (isLiked) {
-      api.removeLikeCard(card).then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
-      });
+      api
+        .removeLikeCard(card)
+        .then((newCard) => {
+          setCards((state) =>
+            state.map((c) => (c._id === card._id ? newCard : c))
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
-      api.addlikeCard(card).then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
-      });
+      api
+        .addlikeCard(card)
+        .then((newCard) => {
+          setCards((state) =>
+            state.map((c) => (c._id === card._id ? newCard : c))
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
 
@@ -159,7 +187,7 @@ function App() {
             path={path}
             linkText={linkText}
             isLoggedIn={loggedIn}
-            handleLinkClick={handleLinkClick}
+            handleLinkClick={handleLogout}
           />
           <Switch>
             <Route exact path="/">
@@ -181,13 +209,12 @@ function App() {
             <Route path="/sign-up">
               <Register
                 handleHeaderChange={handleHeaderChange}
-                handleRegisterConfirm={handleRegisterConfirm}
-                handleRegisterRefuse={handleRegisterRefuse}
+                handleRegister={handleRegister}
               />
             </Route>
             <Route path="/sign-in">
               <Login
-                setLoggedIn={setLoggedIn}
+                handleLogin={handleLogin}
                 handleHeaderChange={handleHeaderChange}
               />
             </Route>
