@@ -15,6 +15,7 @@ import Loader from "./Loader";
 import Register from "./Register";
 import * as auth from "../utils/authApi.js";
 import InfoTooltip from "./InfoTooltip";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfileOpen] = React.useState(false);
@@ -42,14 +43,17 @@ function App() {
   }, []);
 
   function handleLogin(email, password) {
-    auth.authorize(email, password).then(res => {
-      console.log(res);
-      localStorage.setItem('token', res.token);
-      setLoggedIn(true);
-      tokenCheck();
-    }).catch(err => {
-      console.log(err)
-    })
+    auth
+      .authorize(email, password)
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("token", res.token);
+        setLoggedIn(true);
+        tokenCheck();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleLogout() {
@@ -60,16 +64,19 @@ function App() {
   }
 
   function handleRegister(email, password) {
-    auth.register(email, password).then(res => {
-      console.log(res);
-      setRegisterComfirm(true);
-      setInfoPopupOpen(true);
-      history.push("/sign-in")
-    }).catch(err => {
-      setRegisterComfirm(false);
-      setInfoPopupOpen(true);
-      console.log(err)
-    })
+    auth
+      .register(email, password)
+      .then((res) => {
+        console.log(res);
+        setRegisterComfirm(true);
+        setInfoPopupOpen(true);
+        history.push("/sign-in");
+      })
+      .catch((err) => {
+        setRegisterComfirm(false);
+        setInfoPopupOpen(true);
+        console.log(err);
+      });
   }
 
   function tokenCheck() {
@@ -190,22 +197,20 @@ function App() {
             handleLinkClick={handleLogout}
           />
           <Switch>
-            <Route exact path="/">
-              {loggedIn ? (
-                <Main
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  cards={cards}
-                  onCardLike={handleCardLike}
-                  onCardDel={handleCardDelete}
-                  handleHeaderChange={handleHeaderChange}
-                />
-              ) : (
-                <Redirect to="/sign-in" />
-              )}
-            </Route>
+            <ProtectedRoute
+              exact
+              path="/"
+              loggedIn={loggedIn}
+              component={Main}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDel={handleCardDelete}
+              handleHeaderChange={handleHeaderChange}
+            />
             <Route path="/sign-up">
               <Register
                 handleHeaderChange={handleHeaderChange}
