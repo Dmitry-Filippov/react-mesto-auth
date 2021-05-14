@@ -7,3 +7,5 @@
 * Flex
 * Grid
 * React
+
+Ссылка на Pages[https://dmitry-filippov.github.io/react-mesto-auth]
