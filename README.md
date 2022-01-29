@@ -8,4 +8,5 @@
 * Grid
 * React
 
-[Ссылка на Pages](https://dmitry-filippov.github.io/react-mesto-auth)
+[Ссылка на Pages](https://dmitry-filippov.github.io/react-mesto-auth)  
+*проект выполнен в рамках учебной программы Я.Практикум*
